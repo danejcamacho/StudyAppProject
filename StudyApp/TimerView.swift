@@ -48,6 +48,10 @@ struct TimerView: View {
 }
 
 
+/*=============================
+ STOPWATCH CODE
+ =============================*/
+
 struct StopwatchView: View {
 
     
@@ -68,6 +72,7 @@ struct StopwatchView: View {
                             .buttonStyle(.borderedProminent)
                     } else {
                         Button("Stop") { self.stopWatch.stop() }
+                            .buttonStyle(.borderedProminent)
                     }
 
                     Button("Reset") { self.stopWatch.reset() }
@@ -105,11 +110,40 @@ struct StopwatchView: View {
             isTimerRunning = false
         }
     }
+
+/*=============================
+ COUNTDOWN CODE
+ =============================*/
     
 
 struct CountDownView: View {
+    @ObservedObject var countDown = CountDown()
     var body: some View{
         Text("This is the count down")
+    }
+}
+
+class CountDown: ObservableObject {
+    
+    @Published var counter: Int = 0
+    @Published var isTimerRunning = false
+    var timer = Timer()
+    
+    
+    func start() {
+        self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+            self.counter += 1
+        }
+        isTimerRunning = true
+    }
+    func stop() {
+        self.timer.invalidate()
+        isTimerRunning = false
+    }
+    func reset() {
+        self.counter = 0
+        self.timer.invalidate()
+        isTimerRunning = false
     }
 }
 
